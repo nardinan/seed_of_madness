@@ -1,0 +1,141 @@
+scene :begin
+	| before { 
+		let engine_is_on = true, 
+		let engine_manipulated = false 
+	}
+	| description
+		<<Un rumore cupo, ripetitivo e fastidioso accompagna il tuo risveglio 
+		mentre una gelida corrente invernale accarezza il tuo volto. I tuoi 
+		occhi, scottati dalla luce artificiale che - con prepotenza - 
+		attraversa le tue palpebre, rinunciano ad aprirsi e la tua intera 
+		attenzione finisce sul sibilo che il vento produce incanalandosi nelle 
+		fessure di quella che la tua mente ha rappresentato come una finestra. 
+		Deglutisci pigramente e, nel farlo, decidi anche di dipingere una 
+		smorfia di disapprovazione sul tuo volto. Una pomeriggio passato 
+		davanti a Netflix sul divano del tuo appartamento, e ora? Dove sei?>>
+	| => :blind_engine_room
+
+scene :blind_engine_room
+	| description 
+		<<Un rumore cupo, ripetitivo e fastidioso riempie il sottofondo. I tuoi 
+		occhi sono serrati mentre - all'esterno - il vento ulula. Il freddo 
+		arriva giú, fin dentro le ossa ...>>
+	| "apro gli occhi" => {
+		message <<Apri gli occhi. Santo cielo, ma dove diavolo sei? Appese al
+		soffitto di quello che appare come un capanno in lamiera, delle bianche
+		e asettiche luci neon danno interamente vita a ció che ti circonda. Di 
+		fronte a te, al centro della stanza, un enorme generatore Diesel 
+		industriale - inchiodato al pavimento - emette un cupo e continuo 
+		rumore. A giudicare dal ripetitivo sali e scendi dei giri del 
+		generatore e dai lievi cambi d'intensitá delle luci perfettamente 
+		sincronizzati, é senza dubbio lui a fornire elettricitá ai neon. Dalla 
+		piccola finestra sulla parete OVEST, noti che della neve sta scendendo 
+		copiosamente: é notte. Hai addosso una pesante giacca invernale rossa e dei guanti da neve. Un'etichetta sopra la giacca riporta il tuo nome: 'Gianciro'>>,
+		:engine_room
+	}
+	| "cos'é successo ieri?" => {
+		message <<Ricordi chiaramente d'aver visto un paio di sciocchezze su 
+		Netflix (erano produzioni Netflix originali, cosa ti aspettavi?) e, 
+		sapendo che ti saresti addormentato, hai impostato la sveglia alle 20 
+		in modo da non saltare la cena. Ottima idea, bravo. Non ricordi 
+		tuttavia d'esserti addormentato ne d'aver sentito la sveglia. 
+		Sicuramente non sei piú al sicuro, sul tuo amato divano>>
+	}
+	| "mi riaddormento" => {
+		message <<L'ansia e lo stress non te lo permettono. É successo qualcosa
+		e vuoi vederci chiaro a riguardo. Insomma, poi mica vorrai passare la 
+		vita a dormire, no?>>
+	}
+
+scene :engine_room
+	| before {
+		if [:engine_room] not in visited then {
+			let count_kitchen_kicks = 0
+		}
+	}
+	| description {
+		let description_engine_on = <<Emette un cupo e continuo rumore e sembra 
+		fornire energia alle luci a neon appese al soffitto>>,
+		let description_engine_off = <<Silenzioso ed immobile, il suo profilo si 
+		delinea a malapena grazie alla lieve luce bianca artificiale che fa 
+		capolino dalla piccola finestra ad OVEST>>,
+		<<Un massiccio e potente generatore Diesel industriale - inchiodato al 
+		pavimento - é al centro di questo capanno in lamiera. 
+		{ description_engine_on when engine_is_on else description_engine_off }. 
+		All'esterno é notte e sta nevicando mentre il vento ulula. Vedi una 
+		porta { "aperta, in direzione della cucina," when [:kitchen] in 
+		visited else "chiusa" } a NORD.>>
+	}
+	| { "vai a NORD" when [:kitchen] not in visited else 
+		"vai a NORD, verso la cucina" } => {
+		let count_kitchen_kicks += 1,
+		if count_kitchen_kicks = 1 then {
+			message <<La solida porta metallica é - praticamente - 
+			un enorme blocco di ghiaccio. Per aver raggiunto quello stato deve
+			essere stata vittima delle intemperie per un lungo, lungo periodo. 
+			Deciso a proseguire e fiducioso sui tre giorni a settimana di 
+			palestra dunque, ti piazzi bene e le dai una violenta spallata 
+			scaricando su di essa le tue frustrazioni. Senza successo, 
+			sfortunatamente.>>
+		} elif count_kitchen_kicks < 5 then {
+			message <<Ti scagli ancora una volta contro la porta.
+			Senti il ghiaccio scricchiolare ma, sfortunatamente, la porta
+			non cede.>>
+		} else :kitchen
+	}
+	| "guarda dalla finestra ad OVEST" => {
+		message <<Ti avvicini { "titubante, tastando i muri" when not 
+		engine_is_on else "con cautela" } alla finestra. Quella che sembrava 
+		una innocente nevicata é in realtá una vera e propria bufera. La fitta 
+		neve che, costretta dal vento a danzare a destra e sinistra, scende 
+		copiosamente, non ti permette di vedere granché. Riesci tuttavia a 
+		vedere chiaramente una torcia da campo legata ad un bastone da hiking 
+		e piantata sulla neve proprio li, davanti alla finestra. Emette una 
+		debole luce bianca ma é oramai prossima ad esaurire la carica>>
+	}
+	| { if engine_is_on then "spegni il generatore" } => { 
+      	message <<Ti avvicini all'enorme bottone "fungo" installato accanto 
+      	al pannello lampeggiante del generatore. Senza pensarci troppo lo
+      	premi a mano aperta con un gesto quasi plateale. Il motore borbotta
+      	ancora qualche secondo e poi - come puoi ben immaginare - si spegne
+      	completamente trascinando la stanza nel buio.>>,
+      	let engine_is_on = false,
+      	let engine_manipulated = true
+    }
+	| { if not engine_is_on then "accendi il generatore" } => {
+		message <<Sganci il fungo e premi il bottone verde accanto allo 
+		stesso. Dopo un lamento iniziale, il generatore torna alla sua 
+		routine facendo tornare a brillare le luci della stanza.>>,
+		let engine_is_on = true
+	}
+
+scene :kitchen
+	| before {
+		if [:kitchen] not in visited then {
+			let intro_kitchen = <<Un altro colpo alla porta ed ecco, questo 
+			sembra quello buono! La maniglia cade a terra e, piegandosi sotto 
+			il peso dei tuoi colpi, la porta si apre dolcemente.>>
+		} else {
+			let intro_kitchen = <<>>
+		}
+	}
+	| description {
+		let description_engine_on = <<Una vecchia mensa, apparentemente 
+		inutilizzata da secoli. Pentole e piatti sporchi sono stati abbandonati 
+		al loro fato e il terribile e nauseante odore che permea la stanza 
+		richiama alla tua memoria l'odore del tuo frigo quando ci hai lasciato 
+		dentro quella coscia di pollo durante il mese delle vacanze estive. 
+		Disgustoso.>>,
+		let description_engine_off = <<Il buio qui é cosí denso che non riesci
+		a distinguere alcun profilo. Potrebbe essere pericolo addentrarsi alla
+		cieca.>>,
+		<<{intro_kitchen}{ description_engine_on when engine_is_on else 
+		description_engine_off } >>
+	}
+	| "va a SUD, verso il generatore" => :engine_room
+	| { if [:coltello] not in inventory then "prendi un coltello" } => { 
+		message <<un vecchio coltello da cucina. Te lo ficchi in tasca (con 
+		cautela ovviamente): non sapendo cosa sta succedendo, puó far comodo>>,
+		let inventory += [:coltello]
+		}
+	| "basta" => :end
