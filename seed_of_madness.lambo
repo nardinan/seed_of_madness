@@ -21,18 +21,8 @@ scene :blind_engine_room
 		occhi sono serrati mentre - all'esterno - il vento ulula. Il freddo 
 		arriva giú, fin dentro le ossa ...>>
 	| "apro gli occhi" => {
-		message <<Apri gli occhi. Santo cielo, ma dove diavolo sei? Appese al
-		soffitto di quello che appare come un capanno in lamiera, delle bianche
-		e asettiche luci neon danno interamente vita a ció che ti circonda. Di 
-		fronte a te, al centro della stanza, un enorme generatore Diesel 
-		industriale - inchiodato al pavimento - emette un cupo e continuo 
-		rumore. A giudicare dal ripetitivo sali e scendi dei giri del 
-		generatore e dai lievi cambi d'intensitá delle luci perfettamente 
-		sincronizzati, é senza dubbio lui a fornire elettricitá ai neon. Dalla 
-		piccola finestra sulla parete OVEST, noti che della neve sta scendendo 
-		copiosamente: é notte. Hai addosso una pesante giacca invernale rossa e 
-		dei guanti da neve. Un'etichetta sopra la giacca riporta il tuo 
-		familiare nome: 'Gianciro'>>,
+		message <<Apri faticosamente gli occhi. Santo cielo, ma dove diavolo
+		ti trovi?>>,
 		:engine_room
 	}
 	| "cos'é successo ieri?" => {
@@ -53,21 +43,37 @@ scene :engine_room
 	| before {
 		if [:engine_room] not in visited then {
 			let count_kitchen_kicks = 0,
-			let kitchen_door_open = false
+			let kitchen_door_open = false,
+			let engine_room_description = <<Appese al soffitto di quello che 
+			appare come l'interno di un capanno in lamiera, delle bianche 
+			e asettiche luci neon danno interamente vita a ció che ti 
+			circonda. Di fronte a te, al centro della stanza, un enorme 
+			generatore Diesel industriale - inchiodato al pavimento - emette
+			un cupo e continuo rumore. A giudicare dal ripetitivo sali e scendi
+			dei giri del generatore e dai lievi cambi d'intensitá delle luci
+			perfettamente sincronizzati, é senza dubbio lui a fornire
+			elettricitá ai neon. Dalla piccola finestra sulla parete OVEST,
+			noti che della neve sta scendendo copiosamente: é notte. Hai
+			addosso una pesante giacca invernale rossa e dei guanti da neve.
+			Un'etichetta sopra la giacca riporta il tuo familiare
+			nome: 'Gianciro'>>
+		} else {
+			let description_engine_on = <<Emette un cupo e continuo rumore 
+			e sembra fornire energia alle luci a neon appese al soffitto>>,
+			let description_engine_off = <<Silenzioso ed immobile, il suo 
+			profilo si delinea a malapena grazie alla lieve luce bianca
+			artificiale che fa capolino dalla piccola finestra ad OVEST>>,
+			let engine_room_description = <<Un massiccio e potente generatore
+			Diesel industriale - inchiodato al pavimento - é al centro di 
+			questo capanno in lamiera. { description_engine_on 
+			when engine_is_on else description_engine_off }. All'esterno é 
+			notte e sta nevicando copiosamente mentre il vento ulula. Vedi una 
+			porta { "aperta, in direzione della cucina," when [:kitchen] in 
+			visited else "chiusa" } a NORD.>>
 		}
 	}
 	| description {
-		let description_engine_on = <<Emette un cupo e continuo rumore e sembra 
-		fornire energia alle luci a neon appese al soffitto>>,
-		let description_engine_off = <<Silenzioso ed immobile, il suo profilo si 
-		delinea a malapena grazie alla lieve luce bianca artificiale che fa 
-		capolino dalla piccola finestra ad OVEST>>,
-		<<Un massiccio e potente generatore Diesel industriale - inchiodato al 
-		pavimento - é al centro di questo capanno in lamiera. 
-		{ description_engine_on when engine_is_on else description_engine_off }. 
-		All'esterno é notte e sta nevicando mentre il vento ulula. Vedi una 
-		porta { "aperta, in direzione della cucina," when [:kitchen] in 
-		visited else "chiusa" } a NORD.>>
+		engine_room_description
 	}
 	| { "vai a NORD" when [:kitchen] not in visited else 
 		"vai a NORD, verso la cucina" } => {
@@ -130,34 +136,163 @@ scene :engine_room
 scene :kitchen
 	| before {
 		if [:kitchen] not in visited then {
-			message <<Un'altra ronzante serie di pallidi neon appesi al soffitto
-			danno vita alla fredda e stretta cucina di un ristorante. Le 
-			superfici metalliche dei lunghi fornelli e piani sono ricoperte da 
-			densa polvere, macchie, croste e piatti ammuffiti abbandonati al 
-			loro destino. Qualsiasi cosa sia successa qui deve essere successa 
-			molto tempo fa e molto rapidamente. Un pungente e nauseante odore di 
-			marcio permea l'aria a richiama alla tua memoria l'odore del tuo 
-			frigo quella calda estate del 2003 in cui ti tolsero la corrente 
-			per due settimane consecutive mentre eri a Porchia, in vacanza. 
-			A NORD, dal lato opposto della cucina, noti una grande apertura che
-			si getta verso un'area completamente immersa in un denso e 
-			agghiacciante buio. Improvvisamente, qualcosa di inaspettato 
-			cattura la tua attenzione. Un bicchiere, vuoto, con un post-it 
-			giallo brillante attaccato, giace vicino ad un mucchio di piatti
-			sporchi. A differenza delle altre stoviglie, questo bicchiere e'
-			stato usato molto recentemente. Il messaggio sul post-it ti gela
-			il cuore: "Per favore Gianciro, fai bere a Roberto il contenuto di
-			questo bicchiere prima di rinchiuderlo nella sala del generatore.".
-			Incuriosito controlli, ma non e' la tua scrittura.>>
+			let kitchen_description = <<Un'altra ronzante serie di pallidi neon 
+			appesi al soffitto danno vita alla fredda e stretta cucina di un 
+			ristorante. Le superfici metalliche dei lunghi fornelli e piani 
+			sono ricoperte da densa polvere, macchie, croste e piatti ammuffiti 
+			abbandonati al loro destino. Qualsiasi cosa sia successa qui deve 
+			essere successa molto tempo fa e molto rapidamente. Un pungente e 
+			nauseante odore di marcio permea l'aria a richiama alla tua memoria
+			l'odore del tuo frigo quella calda estate del 2003 in cui ti 
+			tolsero la corrente per due settimane consecutive mentre eri a 
+			Porchia, in vacanza. Noti a NORD una grande apertura che si getta
+			verso un'area completamente immersa in un denso e agghiacciante 
+			buio. Improvvisamente, qualcosa di inaspettato cattura la tua 
+			attenzione. Un bicchiere pieno di un liquido trasparente, con un 
+			post-it giallo attaccato, giace vicino ad un mucchio di piatti
+			sporchi. A differenza delle altre stoviglie, questo bicchiere
+			sembra sia stato usato molto recentemente. Il messaggio sul 
+			post-it ti gela il cuore: é rivolto a te! "Per favore Gianciro ..."
+			recita il post-it "... bevi il contenuto di questo bicchiere". 
+			Incuriosito controlli, ma non é la tua scrittura.>>
+		} else {
+			let kitchen_description = <<Una fredda e tetra cucina di un 
+			ristorante abbandonata - da tempo - in fretta e furia. L'odore 
+			nauseante di cibo ammuffito ha oramai contaminato tutta l'aria. Un
+			bicchiere pieno di un liquido trasparente giace tra le stoviglie:
+			sembra sia stato utilizzato da poco. Un post-it attaccato su di
+			esso recita "Per favore Gianciro bevi il contenuto di questo
+			bicchiere". Non é la tua scrittura. A NORD una grande apertura
+			si getta verso un'altra area completamente immersa nel buio
+			mentre a SUD c'é la stanza del generatore.>>
 		}
 	}
 	| description {
-		<<Una stanza puzzona>>
+		kitchen_description
 	}
 	| "va a SUD, verso il generatore" => :engine_room
-	| { if [:coltello] not in inventory then "prendi un coltello" } => { 
-		message <<un vecchio coltello da cucina. Te lo ficchi in tasca (con 
-		cautela ovviamente): non sapendo cosa sta succedendo, puó far comodo>>,
-		let inventory += [:coltello]
+	| "va a NORD" => :dark_room
+	| "cosa c'é dentro al bicchiere" => {
+		message <<Il contenuto del bicchiere sembra pura e semplice acqua ma,
+		a giudicare dal post-it, immagini ovviamente che non si tratti affatto
+		di qualcosa di cosí scontato.>>
+	}
+	| "bevi il contenuto del bicchiere" => :drink_the_glass
+
+scene :dark_room
+	| description {
+		<<A giudicare dai leggeri profili delineati dai neon della cucina che,
+		timidamente entrano nella stanza, sembrerebbe essere una mensa. Non
+		riesci a distinguere nulla ma, la tua sensazione piú profonda é che
+		questa stanza sia enorme. L'ansia sale velocemente mentre i tuoi occhi
+		fanno fatica ad abituarsi al profondo e intenso buio e galoppano a
+		destra e sinistra alla ricerca di una possibile via di fuga. Dietro di
+		te, a SUD, c'é la cucina>>  
+	}
+	| "vai a SUD, verso la cucina" => :kitchen
+
+scene :drink_the_glass
+	| description {
+		<<Senza pensarci troppo butti giú il bicchiere d'acqua quasi
+		in un sol colpo. Lo fai con cosí tanta rapiditá che il petto inizia a 
+		farti male (sei sempre il solito incontrollabile). Ti porti una mano al
+		petto e, con la tua teatralitá, esasperi la cosa inginocchiandoti a
+		terra e fingendo un attacco di cuore. Digrigni i denti e fai dei
+		respiri profondi mentre gli spasmi del tuo esofago terminano 
+		lentamente diminuendo il dolore. Per fortuna ti sei messo in ginocchio,
+		perché qualsiasi cosa tu abbia ingerito ti sta facendo perdere i sensi.
+		Fai quindi la cosa piú intelligente che ti salta in testa: provi ad
+		alzarti in piedi. Cadi a terra come una pera e l'ultima cosa che senti
+		é il dolore della tua stupiditá. Buio. Sipario.>>
+	}
+	| => :bread_slice
+
+scene :bread_slice
+	| before {
+		if [:bread_slice] not in visited {
+			let try_to_listen=0
+			let bread_slice_description=<<Sei una fetta di pane morbido. Ti 
+			trovi su di un tavolino di legno apparecchiato con una tovaglia
+			dozzinale, due piattini, due bicchieri, due forchettine da dolce e
+			ripieno di vettovaglie. Vicino a te, moltre altre fette di pane 
+			morbido, barattolini monoporzione di marmellata, crema di nocciole, 
+			della frutta e alcune merendine confezionate. Sembrerebbe la 
+			tavola di un Bed & Breakfast a conduzione familiare imbandita per 
+			la colazione. Due persone, un ragazzo e una ragazza, sono in piedi
+			di fronte a te e, chiacchierando, continuano a lanciarti occhiate
+			minacciose.>>
+		} else {
+			let bread_slice_description=<<Sei una fetta di pane mobido tra
+			altre fette di pane morbido, sulla tavola apparecchiata
+			pronta per la colazione di un Bed & Breakfast a conduzione 
+			familiare. Due persone, un ragazzo e una ragazza, parlano tra
+			di loro lanciandoti occhiate minacciose.>>
 		}
+	}
+	| description {
+		bread_slice_description
+	}
+	| "magari riesco a capire cosa stanno dicendo ..." => {
+		let try_to_listen += 1
+		message <<Provi a stirare le orecchie per cogliere frammenti della
+		conversazione tra i due ...>>
+		if try_to_listen = 1 then {
+			message <<Con eccitamento sempre crescente, il ragazzo sta
+			raccontando alla ragazza di quanto fosse stato meraviglioso ed
+			entusiasmante il concerto della sera prima, descrivendolo come
+			"L'esperienza piú bella della mia vita". Lei non sembra
+			particolarmente interessata, e si limita ad annuire brevemente e
+			a lanciare occhiate fugaci verso l'esteno, dalla finestra accanto
+			a loro.>>
+		} elif try_to_listen = 2 then {
+			message <<Lui deve essersi accorto che lei non era interessata alla
+			conversazione. Ora il ragazzo sta usando l'indice della sua mano
+			destra - goliardicamente - per punzecchiare la ragazza sulla guancia
+			ripetendole "E a te é piaciuto? A te é piaciuto?". Questa cosa
+			pare stia rendendo lei sempre piú nervosa.>>
+		} else {
+			:try_to_understand
+		}
+	}
+	| "cerco di attirare l'attenzione della marmellata" => {
+		message <<Non puoi attirare l'attenzione di un oggetto. Sei stupido?>>
+	}
+
+scene :try_to_understand
+	| description {
+		<<L'argomento della conversazione sembra sia cambiato. Lei - con tono
+		calmo e deciso - sta raccontando al ragazzo della sua relazione con un
+		certo Piercarmelo. Sembra quasi scocciata, come se raccontare questa 
+		cosa fosse una seccatura che si sarebbe risparmiata volentier. Lui,
+		con gli occhi lucidi da cucciolo di Golden Retriever le sussurra: "Cosí, 
+		dopo cinque anni insieme, tutto finisce qui". Forse - ingenuamente - il
+		caro ragazzo pensava che sottolineare l'immensitá di tempo passato
+		assieme potesse giocare a suo favore. Lei, in tutta risposta, lo ignora
+		e si gira di nuovo verso la finestram, sospirando. Ti scappa un
+		"che stronza" a mezza bocca, ma sfortunatamente per te, eri l'unico a
+		parlare in quel momento: lei ti sente. Con la faccia di chi nella vita
+		ha sempre avuto tutto servito su di un piatto d'argento, ti lancia
+		un'occhiataccia: "Le fette di Pan Carré non parlano". Detto
+		questo ti prende, ti appallottola, e ti ficca in bocca. Buio. Sipario.>> 
+	}
+	| => :glass_of_beer
+
+message :glass_of_beer
+	| before {
+		if [:glass_of_beer] not in visited {
+			let glass_of_beer_description=<<Sei un bicchiere di birra appoggiato
+			sul maltrattato bancone di un pub irlandese. In sottofondo le note
+			di una canzone dei Pink Floyd, shine on you crazy diamond, sta
+			accompagnando la serata delle persone nel locale. Il volume della
+			musica é fuori scala ma, comunque, le risate e le urla degli astanti
+			le cui teste sono sovrastate da una densa cappa di fumo di 
+			sigaretta, riescono parzialmente a coprirle la voce di Roger Waters.
+		} else {
+			let glass_of_beer_description=<<Sei un bicchiere di birra sul
+			bancone di un pub irlandese. Fumo, risate e grida saturano l'aria>>
+		}
+	}
+	| description {
+		glass_of_beer_description
+	}
 	| "basta" => :end
