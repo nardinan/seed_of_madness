@@ -209,9 +209,9 @@ scene :drink_the_glass
 
 scene :bread_slice
 	| before {
-		if [:bread_slice] not in visited {
-			let try_to_listen=0
-			let bread_slice_description=<<Sei una fetta di pane morbido. Ti 
+		if [:bread_slice] not in visited then {
+			let try_to_listen=0,
+			let bread_slice_description = <<Sei una fetta di pane morbido. Ti 
 			trovi su di un tavolino di legno apparecchiato con una tovaglia
 			dozzinale, due piattini, due bicchieri, due forchettine da dolce e
 			ripieno di vettovaglie. Vicino a te, moltre altre fette di pane 
@@ -222,7 +222,7 @@ scene :bread_slice
 			di fronte a te e, chiacchierando, continuano a lanciarti occhiate
 			minacciose.>>
 		} else {
-			let bread_slice_description=<<Sei una fetta di pane mobido tra
+			let bread_slice_description = <<Sei una fetta di pane mobido tra
 			altre fette di pane morbido, sulla tavola apparecchiata
 			pronta per la colazione di un Bed & Breakfast a conduzione 
 			familiare. Due persone, un ragazzo e una ragazza, parlano tra
@@ -233,9 +233,9 @@ scene :bread_slice
 		bread_slice_description
 	}
 	| "magari riesco a capire cosa stanno dicendo ..." => {
-		let try_to_listen += 1
 		message <<Provi a stirare le orecchie per cogliere frammenti della
-		conversazione tra i due ...>>
+		conversazione tra i due ...>>,
+		let try_to_listen += 1,
 		if try_to_listen = 1 then {
 			message <<Con eccitamento sempre crescente, il ragazzo sta
 			raccontando alla ragazza di quanto fosse stato meraviglioso ed
@@ -277,18 +277,19 @@ scene :try_to_understand
 	}
 	| => :glass_of_beer
 
-message :glass_of_beer
+scene :glass_of_beer
 	| before {
-		if [:glass_of_beer] not in visited {
-			let glass_of_beer_description=<<Sei un bicchiere di birra appoggiato
-			sul maltrattato bancone di un pub irlandese. In sottofondo le note
-			di una canzone dei Pink Floyd, shine on you crazy diamond, sta
-			accompagnando la serata delle persone nel locale. Il volume della
-			musica é fuori scala ma, comunque, le risate e le urla degli astanti
-			le cui teste sono sovrastate da una densa cappa di fumo di 
-			sigaretta, riescono parzialmente a coprirle la voce di Roger Waters.
+		if [:glass_of_beer] not in visited then {
+			let glass_of_beer_description = <<Sei un bicchiere di birra 
+			appoggiato sul maltrattato bancone di un pub irlandese. In 
+			sottofondo le note di una canzone dei Pink Floyd, shine on you
+			crazy diamond, sta accompagnando la serata delle persone nel locale.
+			Il volume della musica é fuori scala ma, comunque, le risate e le
+			urla degli astanti le cui teste sono sovrastate da una densa cappa
+			di fumo di sigaretta, riescono parzialmente a coprirle la voce di
+			Roger Waters.>>
 		} else {
-			let glass_of_beer_description=<<Sei un bicchiere di birra sul
+			let glass_of_beer_description = <<Sei un bicchiere di birra sul
 			bancone di un pub irlandese. Fumo, risate e grida saturano l'aria>>
 		}
 	}
