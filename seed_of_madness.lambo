@@ -30,7 +30,9 @@ scene :blind_engine_room
 		generatore e dai lievi cambi d'intensitá delle luci perfettamente 
 		sincronizzati, é senza dubbio lui a fornire elettricitá ai neon. Dalla 
 		piccola finestra sulla parete OVEST, noti che della neve sta scendendo 
-		copiosamente: é notte. Hai addosso una pesante giacca invernale rossa e dei guanti da neve. Un'etichetta sopra la giacca riporta il tuo nome: 'Gianciro'>>,
+		copiosamente: é notte. Hai addosso una pesante giacca invernale rossa e 
+		dei guanti da neve. Un'etichetta sopra la giacca riporta il tuo 
+		familiare nome: 'Gianciro'>>,
 		:engine_room
 	}
 	| "cos'é successo ieri?" => {
@@ -50,7 +52,8 @@ scene :blind_engine_room
 scene :engine_room
 	| before {
 		if [:engine_room] not in visited then {
-			let count_kitchen_kicks = 0
+			let count_kitchen_kicks = 0,
+			let kitchen_door_open = false
 		}
 	}
 	| description {
@@ -71,17 +74,32 @@ scene :engine_room
 		let count_kitchen_kicks += 1,
 		if count_kitchen_kicks = 1 then {
 			message <<La solida porta metallica é - praticamente - 
-			un enorme blocco di ghiaccio. Per aver raggiunto quello stato deve
+			un enorme blocco di ghiaccio. Per aver raggiunto questo stato deve
 			essere stata vittima delle intemperie per un lungo, lungo periodo. 
-			Deciso a proseguire e fiducioso sui tre giorni a settimana di 
-			palestra dunque, ti piazzi bene e le dai una violenta spallata 
-			scaricando su di essa le tue frustrazioni. Senza successo, 
-			sfortunatamente.>>
+			Deciso a proseguire e fiducioso che i due giorni a settimana di 
+			palestra ti abbiano dato tono muscolare dunque, ti piazzi bene e 
+			le dai una violenta spallata scaricando su di essa le tue 
+			frustrazioni. Senza successo, sfortunatamente.>>
 		} elif count_kitchen_kicks < 5 then {
 			message <<Ti scagli ancora una volta contro la porta.
 			Senti il ghiaccio scricchiolare ma, sfortunatamente, la porta
 			non cede.>>
-		} else :kitchen
+		} else {
+			if not kitchen_door_open then {
+				message <<Un altro colpo alla porta ed ecco, questo 
+				sembra quello buono! La maniglia cade a terra e, piegandosi 
+				sotto la forza delle tue spallate, la porta si apre - diciamo - 
+				dolcemente.>>,
+				let kitchen_door_open = true
+			},
+			if not engine_is_on then {
+				message <<La stanza davanti a te é sommersa in un buio cosi 
+				denso che non riesci a distinguere alcun profilo. Potrebbe 
+				essere pericolo addentrarsi senza poter vedere nulla.>>
+			} else {
+				:kitchen
+			}
+		}
 	}
 	| "guarda dalla finestra ad OVEST" => {
 		message <<Ti avvicini { "titubante, tastando i muri" when not 
@@ -112,25 +130,29 @@ scene :engine_room
 scene :kitchen
 	| before {
 		if [:kitchen] not in visited then {
-			let intro_kitchen = <<Un altro colpo alla porta ed ecco, questo 
-			sembra quello buono! La maniglia cade a terra e, piegandosi sotto 
-			il peso dei tuoi colpi, la porta si apre dolcemente.>>
-		} else {
-			let intro_kitchen = <<>>
+			message <<Un'altra ronzante serie di pallidi neon appesi al soffitto
+			danno vita alla fredda e stretta cucina di un ristorante. Le 
+			superfici metalliche dei lunghi fornelli e piani sono ricoperte da 
+			densa polvere, macchie, croste e piatti ammuffiti abbandonati al 
+			loro destino. Qualsiasi cosa sia successa qui deve essere successa 
+			molto tempo fa e molto rapidamente. Un pungente e nauseante odore di 
+			marcio permea l'aria a richiama alla tua memoria l'odore del tuo 
+			frigo quella calda estate del 2003 in cui ti tolsero la corrente 
+			per due settimane consecutive mentre eri a Porchia, in vacanza. 
+			A NORD, dal lato opposto della cucina, noti una grande apertura che
+			si getta verso un'area completamente immersa in un denso e 
+			agghiacciante buio. Improvvisamente, qualcosa di inaspettato 
+			cattura la tua attenzione. Un bicchiere, vuoto, con un post-it 
+			giallo brillante attaccato, giace vicino ad un mucchio di piatti
+			sporchi. A differenza delle altre stoviglie, questo bicchiere e'
+			stato usato molto recentemente. Il messaggio sul post-it ti gela
+			il cuore: "Per favore Gianciro, fai bere a Roberto il contenuto di
+			questo bicchiere prima di rinchiuderlo nella sala del generatore.".
+			Incuriosito controlli, ma non e' la tua scrittura.>>
 		}
 	}
 	| description {
-		let description_engine_on = <<Una vecchia mensa, apparentemente 
-		inutilizzata da secoli. Pentole e piatti sporchi sono stati abbandonati 
-		al loro fato e il terribile e nauseante odore che permea la stanza 
-		richiama alla tua memoria l'odore del tuo frigo quando ci hai lasciato 
-		dentro quella coscia di pollo durante il mese delle vacanze estive. 
-		Disgustoso.>>,
-		let description_engine_off = <<Il buio qui é cosí denso che non riesci
-		a distinguere alcun profilo. Potrebbe essere pericolo addentrarsi alla
-		cieca.>>,
-		<<{intro_kitchen}{ description_engine_on when engine_is_on else 
-		description_engine_off } >>
+		<<Una stanza puzzona>>
 	}
 	| "va a SUD, verso il generatore" => :engine_room
 	| { if [:coltello] not in inventory then "prendi un coltello" } => { 
