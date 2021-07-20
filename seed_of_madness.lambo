@@ -195,15 +195,16 @@ scene :drink_the_glass
 	| description {
 		<<Senza pensarci troppo butti giú il bicchiere d'acqua quasi
 		in un sol colpo. Lo fai con cosí tanta rapiditá che il petto inizia a 
-		farti male (sei sempre il solito incontrollabile). Ti porti una mano al
-		petto e, con la tua teatralitá, esasperi la cosa inginocchiandoti a
-		terra e fingendo un attacco di cuore. Digrigni i denti e fai dei
-		respiri profondi mentre gli spasmi del tuo esofago terminano 
-		lentamente diminuendo il dolore. Per fortuna ti sei messo in ginocchio,
-		perché qualsiasi cosa tu abbia ingerito ti sta facendo perdere i sensi.
-		Fai quindi la cosa piú intelligente che ti salta in testa: provi ad
-		alzarti in piedi. Cadi a terra come una pera e l'ultima cosa che senti
-		é il dolore della tua stupiditá. Buio. Sipario.>>
+		farti male (sei sempre il solito incontrollabile). Con la tua 
+		teatralitá, esasperi la cosa portando una mano al petto e 
+		inginocchiandoti a terra, fingendo un attacco di cuore. Digrigni i 
+		denti e fai dei veloci respiri profondi mentre gli spasmi del tuo 
+		esofago terminano lentamente, diminuendo quella fastidiosa sensazione.
+		Per fortuna ti sei messo in ginocchio, perché qualsiasi cosa tu abbia
+		ingerito ti sta facendo perdere i sensi. Fai quindi la cosa piú 
+		intelligente che ti salta in testa: provi ad alzarti in piedi. Cadi a
+		terra come una pera matura e l'ultima cosa che senti é il dolore della
+		tua stupiditá. Buio. Sipario.>>
 	}
 	| => :bread_slice
 
@@ -213,20 +214,20 @@ scene :bread_slice
 			let try_to_listen=0,
 			let bread_slice_description = <<Sei una fetta di pane morbido. Ti 
 			trovi su di un tavolino di legno apparecchiato con una tovaglia
-			dozzinale, due piattini, due bicchieri, due forchettine da dolce e
-			ripieno di vettovaglie. Vicino a te, moltre altre fette di pane 
+			dozzinale coperto di vettovaglie, due piattini, due bicchieri, 
+			e due forchettine da dolce. Vicino a te, moltre altre fette di pane 
 			morbido, barattolini monoporzione di marmellata, crema di nocciole, 
 			della frutta e alcune merendine confezionate. Sembrerebbe la 
 			tavola di un Bed & Breakfast a conduzione familiare imbandita per 
 			la colazione. Due persone, un ragazzo e una ragazza, sono in piedi
-			di fronte a te e, chiacchierando, continuano a lanciarti occhiate
-			minacciose.>>
+			di fronte a te e, chiacchierando tra loro, continuano a lanciarti
+			occhiate minacciose.>>
 		} else {
 			let bread_slice_description = <<Sei una fetta di pane mobido tra
-			altre fette di pane morbido, sulla tavola apparecchiata
-			pronta per la colazione di un Bed & Breakfast a conduzione 
-			familiare. Due persone, un ragazzo e una ragazza, parlano tra
-			di loro lanciandoti occhiate minacciose.>>
+			altre fette di pane morbido, sulla tavola imbandita per la colazione
+			di un Bed & Breakfast a conduzione familiare. Due persone, un
+			ragazzo e una ragazza, parlano tra loro lanciandoti occhiate
+			minacciose.>>
 		}
 	}
 	| description {
@@ -250,9 +251,23 @@ scene :bread_slice
 			destra - goliardicamente - per punzecchiare la ragazza sulla guancia
 			ripetendole "E a te é piaciuto? A te é piaciuto?". Questa cosa
 			pare stia rendendo lei sempre piú nervosa.>>
+		} else try_to_listen = 3 then {
+			message <<L'argomento della conversazione sembra sia cambiato. Lei 
+			- con tono calmo e deciso - sta raccontando al ragazzo della sua
+			relazione con un certo Piercarmelo. Sembra quasi scocciata, come
+			se raccontare questa cosa fosse per lei una seccatura che si sarebbe
+			risparmiata volentier. Lui, con gli occhi lucidi da cucciolo di
+			Golden Retriever le sussurra: "Cosí, dopo cinque anni insieme,
+			tutto finisce qui". Forse - ingenuamente - il ragazzo pensava che
+			sottolineare l'immensitá di tempo passato assieme potesse giocare
+			a suo favore. Lei, in tutta risposta, lo ignora e si gira di nuovo
+			verso la finestram, sospirando>>
 		} else {
 			:try_to_understand
 		}
+	}
+	| { if try_to_listen = 3 then "Sussurro 'Ammazza che stronza!'" } => {
+		:try_to_understand_asshole
 	}
 	| "cerco di attirare l'attenzione della marmellata" => {
 		message <<Non puoi attirare l'attenzione di un oggetto. Sei stupido?>>
@@ -260,20 +275,27 @@ scene :bread_slice
 
 scene :try_to_understand
 	| description {
-		<<L'argomento della conversazione sembra sia cambiato. Lei - con tono
-		calmo e deciso - sta raccontando al ragazzo della sua relazione con un
-		certo Piercarmelo. Sembra quasi scocciata, come se raccontare questa 
-		cosa fosse una seccatura che si sarebbe risparmiata volentier. Lui,
-		con gli occhi lucidi da cucciolo di Golden Retriever le sussurra: "Cosí, 
-		dopo cinque anni insieme, tutto finisce qui". Forse - ingenuamente - il
-		caro ragazzo pensava che sottolineare l'immensitá di tempo passato
-		assieme potesse giocare a suo favore. Lei, in tutta risposta, lo ignora
-		e si gira di nuovo verso la finestram, sospirando. Ti scappa un
-		"che stronza" a mezza bocca, ma sfortunatamente per te, eri l'unico a
-		parlare in quel momento: lei ti sente. Con la faccia di chi nella vita
-		ha sempre avuto tutto servito su di un piatto d'argento, ti lancia
-		un'occhiataccia: "Le fette di Pan Carré non parlano". Detto
-		questo ti prende, ti appallottola, e ti ficca in bocca. Buio. Sipario.>> 
+		<<Dei lacrimotti iniziano a scorrere sulle guance del ragazzo che,
+		imbarazzato, si allontana frettolosamente. Esce dalla stanza non prima
+		d'aver lanciato un'ultima occhiata alla ragazza che, ignorandolo del
+		tutto, si siede alla tavola della colazione. Fai appena in tempo a
+		notare il ragazzo varcare la porta singhiozzando quando una sostanza
+		densa, profumata e appiccicosa ti viene spalmata in faccia con
+		aggressivitá. Vorresti gridare, ma non ci riesci. Vorresti muoverti
+		ma non ci riesci. Mentre la marmellata si fa strada nella tua gola,
+		vedi la ragazza afferarti delicatamente e staccarti la testa con un
+		morso. Buio. Sipario.>>
+	}
+	| => :glass_of_beer
+
+scene :try_to_understand_asshole
+	| description {
+		<<Ti scappa un "Ammazza che stronza!" a mezza bocca ma, sfortunatamente
+		per te, eri l'unico a parlare in quel momento: lei ti sente. Con la
+		faccia di chi nella vita ha sempre avuto tutto servito su di un piatto
+		d'argento, ti lancia un'occhiataccia: "Le fette di Pan Carré non
+		parlano". Detto questo ti prende, ti appallottola, e ti ficca in
+		bocca. Buio. Sipario.>> 
 	}
 	| => :glass_of_beer
 
@@ -282,15 +304,14 @@ scene :glass_of_beer
 		if [:glass_of_beer] not in visited then {
 			let glass_of_beer_description = <<Sei un bicchiere di birra 
 			appoggiato sul maltrattato bancone di un pub irlandese. In 
-			sottofondo le note di una canzone dei Pink Floyd, shine on you
-			crazy diamond, sta accompagnando la serata delle persone nel locale.
-			Il volume della musica é fuori scala ma, comunque, le risate e le
-			urla degli astanti le cui teste sono sovrastate da una densa cappa
-			di fumo di sigaretta, riescono parzialmente a coprirle la voce di
-			Roger Waters.>>
+			sottofondo le note di una canzone dei Pink Floyd, Shine On You
+			Crazy Diamond, sta facendo da colonna sonora alla serata. Il volume della musica é fuori scala ma, comunque, le risate e le urla degli astanti le cui teste sono sovrastate da una densa cappa di fumo di sigaretta, riescono parzialmente a coprirle la voce di Roger
+			Waters.>>
 		} else {
 			let glass_of_beer_description = <<Sei un bicchiere di birra sul
-			bancone di un pub irlandese. Fumo, risate e grida saturano l'aria>>
+			bancone di un pub irlandese. Fumo, risate e grida saturano l'aria
+			mentre Shine On You Crazy Diamond fa da colonna sonora alla 
+			serata.>>
 		}
 	}
 	| description {
