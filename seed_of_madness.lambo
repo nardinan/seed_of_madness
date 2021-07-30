@@ -43,7 +43,6 @@ scene :engine_room
 	| before {
 		if [:engine_room] not in visited then {
 			let count_kitchen_kicks = 0,
-			let kitchen_door_open = false,
 			let engine_room_description = <<Appese al soffitto di quello che 
 			appare come l'interno di un capanno in lamiera, delle bianche 
 			e asettiche luci neon danno interamente vita a ció che ti 
@@ -91,19 +90,12 @@ scene :engine_room
 			Senti il ghiaccio scricchiolare ma, sfortunatamente, la porta
 			non cede.>>
 		} else {
-			if not kitchen_door_open then {
-				message <<Un altro colpo alla porta ed ecco, questo 
-				sembra quello buono! La maniglia cade a terra e, piegandosi 
-				sotto la forza delle tue spallate, la porta si apre - diciamo - 
-				dolcemente.>>,
-				let kitchen_door_open = true
-			},
-			if not engine_is_on then {
-				message <<La stanza davanti a te é sommersa in un buio cosi 
-				denso che non riesci a distinguere alcun profilo. Potrebbe 
-				essere pericolo addentrarsi senza poter vedere nulla.>>
-			} else {
+			if [:destroy_the_door] not in visited then {
+				:destroy_the_door
+			} elif engine_is_on then {
 				:kitchen
+			} else {
+				:kitchen_in_darkness
 			}
 		}
 	}
@@ -132,6 +124,22 @@ scene :engine_room
 		routine facendo tornare a brillare le luci della stanza.>>,
 		let engine_is_on = true
 	}
+
+scene :destroy_the_door
+	| description {
+		<<Un altro colpo alla porta ed ecco, questo sembra quello buono! 
+		La maniglia cade a terra e, piegandosi sotto la forza delle tue 
+		spallate, la porta si apre - diciamo - dolcemente.>>
+	}
+	| => { :kitchen when engine_is_on else :kitchen_in_darkness }
+
+scene :kitchen_in_darkness
+	| description {
+		<<La stanza davanti a te é sommersa in un buio cosi denso che non 
+		riesci a distinguere alcun profilo. Potrebbe essere pericolo 
+		addentrarsi senza poter vedere nulla.>>
+	}
+	| => :engine_room
 
 scene :kitchen
 	| before {
@@ -251,17 +259,17 @@ scene :bread_slice
 			destra - goliardicamente - per punzecchiare la ragazza sulla guancia
 			ripetendole "E a te é piaciuto? A te é piaciuto?". Questa cosa
 			pare stia rendendo lei sempre piú nervosa.>>
-		} else try_to_listen = 3 then {
+		} elif try_to_listen = 3 then {
 			message <<L'argomento della conversazione sembra sia cambiato. Lei 
 			- con tono calmo e deciso - sta raccontando al ragazzo della sua
 			relazione con un certo Piercarmelo. Sembra quasi scocciata, come
 			se raccontare questa cosa fosse per lei una seccatura che si sarebbe
-			risparmiata volentier. Lui, con gli occhi lucidi da cucciolo di
+			risparmiata volentieri. Lui, con gli occhi lucidi da cucciolo di
 			Golden Retriever le sussurra: "Cosí, dopo cinque anni insieme,
 			tutto finisce qui". Forse - ingenuamente - il ragazzo pensava che
 			sottolineare l'immensitá di tempo passato assieme potesse giocare
 			a suo favore. Lei, in tutta risposta, lo ignora e si gira di nuovo
-			verso la finestram, sospirando>>
+			verso la finestra, sospirando>>
 		} else {
 			:try_to_understand
 		}
@@ -270,7 +278,7 @@ scene :bread_slice
 		:try_to_understand_asshole
 	}
 	| "cerco di attirare l'attenzione della marmellata" => {
-		message <<Non puoi attirare l'attenzione di un oggetto. Sei stupido?>>
+		message <<La marmellata ti guarda perplessa>>
 	}
 
 scene :try_to_understand
@@ -305,7 +313,10 @@ scene :glass_of_beer
 			let glass_of_beer_description = <<Sei un bicchiere di birra 
 			appoggiato sul maltrattato bancone di un pub irlandese. In 
 			sottofondo le note di una canzone dei Pink Floyd, Shine On You
-			Crazy Diamond, sta facendo da colonna sonora alla serata. Il volume della musica é fuori scala ma, comunque, le risate e le urla degli astanti le cui teste sono sovrastate da una densa cappa di fumo di sigaretta, riescono parzialmente a coprirle la voce di Roger
+			Crazy Diamond, sta facendo da colonna sonora alla serata. Il volume 
+			della musica é fuori scala ma, comunque, le risate e le urla degli 
+			astanti le cui teste sono sovrastate da una densa cappa di fumo di 
+			sigaretta, riescono parzialmente a coprirle la voce di Roger
 			Waters.>>
 		} else {
 			let glass_of_beer_description = <<Sei un bicchiere di birra sul
