@@ -315,6 +315,10 @@ scene :glass_of_beer
 	| before {
 		if [:glass_of_beer] not in visited then {
       let embarassed = false,
+      let how_do_i_know_that_girl = false,
+      let is_she_marta = false,
+      let why_am_i_a_beer = false,
+      let try_to_listen = 0,
 			let glass_of_beer_description = <<Sei un bicchiere di birra
 			appoggiato sul maltrattato bancone di un pub irlandese. In
 			sottofondo le note di una canzone dei Pink Floyd, Shine On You
@@ -334,7 +338,24 @@ scene :glass_of_beer
 		glass_of_beer_description
 	}
   | "di cosa discutono le ragazze?" => {
-    message <<Cerchi di leggere le labbra, ma non ne sei capace.>>
+    let try_to_listen += 1,
+    if try_to_listen = 1 then {
+      message <<Cerchi di leggere le labbra, ma non ne sei assolutamente capace.
+      La ragazza a destra ha un aspetto molto familiare ma non riesci - usando la
+      tua inaffidabile memoria - a darle un ruolo nella tua vita. Quella a
+      sinistra invece non hai idea di chi sia. Sembrerebbe stiano discutendo
+      animatamente sulle legislazioni che regolano le emissioni radio in Corea
+      del sud.>>,
+      let how_do_i_know_that_girl = true
+    } elif try_to_listen = 2 then {
+      message <<Apparentemente ora - sempre facendo fede alle tue abilita di
+      labiolettore - la ragazza dall'aspetto familiare sta proponendo all'amica
+      un piano di investimento a lungo termine su granturco e lumache. Parliamoci
+      chiaro, senza troppi giri: tu non sei capace di leggere le labbra.>>
+    } else {
+      message <<Non sai leggere le labbra, perché continuare a provare? Finché
+      la musica va avanti c'é ben poco tu possa fare>>
+    }
   }
   | "fermenta" => {
     if embarassed = false then {
@@ -349,5 +370,22 @@ scene :glass_of_beer
       message <<Ti senti ancora in abbondante imbarazzo per la scena pietosa,
       preferiresti non replicare.>>
     }
+  }
+  | { if how_do_i_know_that_girl = true then "chi é la ragazza a destra?" } => {
+    message <<Si tratta di certo di qualcuno che ha fatto parte della tua vita
+    ma non hai assolutamente idea di chi sia. Del resto, parliamoci chiaro,
+    sei la stessa persona che non si é fatta la minima domanda sul perché in
+    questo momento sia un bicchiere di birra in un pub. Provi mentalmente a
+    dipingerla in alcuni dei tuoi ricordi, ma niente da fare, non sembra far
+    assolutamente parte di essi.>>,
+    let why_am_i_a_beer = true,
+    let is_she_marta = true
+  }
+  | { if is_she_marta = true then "ma é Marta?" } => {
+  	message <<Aspetta, ma Marta chi?>>
+  }
+  | { if why_am_i_a_beer = true then "perché sono una birra in un pub?" } => {
+    message <<Eh no, mi dispiace, oramai é troppo tardi,
+    avresti dovuto chiederlo prima.>>
   }
   | "basta" => :end
